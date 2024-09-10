@@ -8,8 +8,10 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
 
-contract AUSD is ERC20, ERC20Burnable, Ownable, AccessControl {
+
+contract AUSD is IERC20, ERC20Burnable, Ownable, AccessControl {
 
     using SafeMath for uint256;
     using SafeERC20 for ERC20;

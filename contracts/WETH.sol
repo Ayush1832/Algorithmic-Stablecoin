@@ -8,11 +8,12 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
 
-contract WETH is ERC20, ERC20Burnable, Ownable {
+contract WETH is IERC20, ERC20Burnable, Ownable {
     using SafeERC20 for IERC20;
 
-    constructor() ERC20("Wrapped ETH", "WETH") Ownable(msg.sender) {}
+    constructor() ERC20("Wrapped ETH", "WETH") {}
 
     function mint(uint256 amount) external onlyOwner {
         _mint(msg.sender, amount);

@@ -15,7 +15,7 @@ contract USDReserves is Ownable, ReentrancyGuard, AccessControl {
 
     uint256 public currentReserveId;
 
-    struct ReserveVauIt {
+    struct ReserveVault {
         IERC20 collateral;
         uint256 amount;
     }
@@ -54,7 +54,7 @@ contract USDReserves is Ownable, ReentrancyGuard, AccessControl {
         reserves.safeTransferFrom(address(msg.sender), address(this), amount);
         uint256 currentVaultBalance = _rsvVault[vid].amount;
         _rsvVault[vid].amount = currentVaultBalance.add(amount);
-        emit Deposit(vid, amount);
+        emit deposit(vid, amount);
     }
 
     function withdrawCollateral(uint256 vid, uint256 amount) external {
