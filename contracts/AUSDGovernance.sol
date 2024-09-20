@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 import "./AUSD.sol";
 
-contract AUSDGovern is Ownable, ReentrancyGuard, AccessControl {
+contract AUSDGovernance is Ownable, ReentrancyGuard, AccessControl {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
