@@ -1,7 +1,11 @@
 const {
   mintAUSD,
   burnAUSD,
-  updateCollateralPrice,
+  setAUSD,
+  setWETH,
+  setFeedAddress,
+  pricetoWei,
+  getCollateralPrice,
   validatePeg,
   getAusdPrice,
 } = require("./EthersJS/Governance.js");
@@ -10,7 +14,11 @@ async function test() {
   try {
     // await mintAUSD("100");
     // await burnAUSD(50);
-    await updateCollateralPrice();
+    await setAUSD(),
+    await setWETH(),
+    await setFeedAddress();
+    await pricetoWei();
+    // await getCollateralPrice();
     // await validatePeg();
     // const ausdPrice = await getAusdPrice();
     // console.log("AUSD Price:", ausdPrice);
