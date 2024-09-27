@@ -66,7 +66,7 @@ contract AUSDGovernance is Ownable, ReentrancyGuard, AccessControl {
         reserveCount++;
     }
 
-    function fetchColPrice() external nonReentrant {
+    function fetchColPrice() external nonReentrant  {
         require(hasRole(GOVERN_ROLE, _msgSender()), "Not allowed");
         (, uint256 price, , , ) = priceOracle.latestRoundData();
         uint256 value = (price).mul(COL_PRICE_TO_WEI);

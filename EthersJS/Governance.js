@@ -5,13 +5,16 @@ const priceoracleABI = require("../contracts/ABI/priceoracle.json");
 const reserveABI = require("../contracts/ABI/reserveabi.json");
 const ausdABI = require("../contracts/ABI/ausdabi.json");
 const governanceABI = require("../contracts/ABI/governanceabi.json");
+const usdtABI = require("../contracts/ABI/usdtabi.json");
+const wethABI = require("../contracts/ABI/wethabi.json");
 
 const oracleEth = "0xF0d50568e3A7e8259E16663972b11910F89BD8e7";
 const priceOracleContract = "0x7A400b243B25744945f28c2B3E033A849Fbef5a2";
-const reservecontract = "0x185fc55286db85582EAe742d82519ac037280758";
+const reservecontract = "0x5E6EDcD220c429E6646525FBAa84b4424aE94E3f";
 const ausdcontract = "0x34F6f14fA2998FD5d9e49f539cA569de834Cce2D";
-const governanceContract = "0xc978ff894e6d16D0D6D8ca651253799682ae2EcB";
-const WETHcontract = "0x1FCa0410D8Bc7305A2a24b14667A752FF52D709e";
+const governanceContract = "0x43E61135d68868B6B95eB62a6eaB46c80E371bF9";
+const WETHcontract = "0x9FB922E0A3254e95f68Afe7156bf1006b3af5005";
+const USDTcontract = "0x9178E26a790CF34d9d69A47E900B59114BcdC6d4"
 
 const ethrpc = "https://rpc.ankr.com/eth";
 const amoyrpc = "https://rpc.ankr.com/polygon_amoy";
@@ -27,6 +30,9 @@ const priceoracle = new ethers.Contract(priceOracleContract,priceoracleABI,walle
 const reserves = new ethers.Contract(reservecontract, reserveABI, walletamoy);
 const ausd = new ethers.Contract(ausdcontract, ausdABI, walletamoy);
 const governance = new ethers.Contract(governanceContract,governanceABI,walletamoy);
+const usdt = new ethers.Contract(USDTcontract,usdtABI,walletamoy);
+const weth = new ethers.Contract(WETHcontract,wethABI,walletamoy);
+
 
 // Function to mint AUSD
 async function mintAUSD(amount) {
@@ -58,6 +64,127 @@ async function burnAUSD(amount) {
     console.error(error);
   }
 }
+
+// Function to mint USDT
+async function mintUSDT(amount) {
+  try {
+    const tx = await usdt.mint(amount, {
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`Minted ${amount} USDT`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Function to mint WETH
+async function mintWETH(amount) {
+  try {
+    const tx = await weth.mint(amount, {
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`Minted ${amount} WETH`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Function to approve reserve contract in WETH
+async function approveWETH(amount) {
+  try {
+    const tx = await weth.approve(reservecontract, amount ,{
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`Approved ${amount} WETH`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Function to approve reserve contract in USDT
+async function approveUSDT(amount) {
+  try {
+    const tx = await usdt.approve(reservecontract, amount ,{
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`Approved ${amount} USDT`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//Adding USDT to Vault 0
+async function usdtVault() {
+  try {
+    const tx = await reserves.addReserveVault(USDTcontract, {
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`USDT added to vault 0`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//Adding WETH to Vault 1
+async function wethVault() {
+  try {
+    const tx = await reserves.addReserveVault(WETHcontract, {
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`WETH added to vault 1`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//Depositing USDT to reserve
+async function usdtDeposit(vid, amount) {
+  try {
+    const tx = await reserves.depositCollateral(vid, amount, {
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`${amount} USDT Deposited to ${vid}`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//Depositing WETH to reserve
+async function wethDeposit(vid, amount) {
+  try {
+    const tx = await reserves.depositCollateral(vid, amount, {
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`${amount} WETH Deposited to ${vid} `);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 //Adding collateral token
 async function setAUSD() {
   try {
@@ -128,11 +255,11 @@ async function pricetoWei() {
     const receipt = await tx.wait();
     console.log("Price converted to Wei");
   } catch (error) {
-    console.error("Error setting data feed address:", error);
+    console.error("Error converting to wei:", error);
   }
 }
 
-// Function to fetch and set new collateral price from the oracle in governance contract
+// Function to fetch and show ETH/USD price from the oracle
 async function getCollateralPrice() {
   try {
     const tx = await governance.fetchColPrice({
@@ -141,9 +268,29 @@ async function getCollateralPrice() {
       maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
     });
     await tx.wait();
-    console.log("Collateral price updated");
+    const collateralPrice = await governance.getLatestColPrice();
+    const formattedPrice = ethers.utils.formatUnits(collateralPrice, 18);
+    
+    console.log("Updated ETH/USD collateral price: ", formattedPrice);
+    return formattedPrice;
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error fetching collateral price:", error);
+  }
+}
+
+
+//Collateral rebalancing
+async function ReBalanceCollateral() {
+  try {
+    const tx = await governance.colateralReBalancing( {
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    const receipt = await tx.wait();
+    console.log("Collateral Rebalanced");
+  } catch (error) {
+    console.error("Error rebalancing collateral:", error);
   }
 }
 
@@ -158,16 +305,7 @@ async function validatePeg() {
   }
 }
 
-// Function to deposit collateral into the reserve contract
-async function depositCollateral(vid, amount) {
-  try {
-    const tx = await reserves.depositCollateral(vid, amount);
-    await tx.wait();
-    console.log(`Deposited ${amount} to vault ${vid}`);
-  } catch (error) {
-    console.error(error);
-  }
-}
+
 
 // Function to withdraw collateral from the reserve contract
 async function withdrawCollateral(vid, amount) {
@@ -213,12 +351,22 @@ module.exports = {
   getAusdPrice,
   mintAUSD,
   burnAUSD,
+  mintUSDT,
+  mintWETH,
+  approveWETH,
+  approveUSDT,
+  usdtVault,
+  wethVault,
+  usdtDeposit,
+  wethDeposit,
+
   setAUSD,
   setWETH,
+  setReserve,
   setFeedAddress,
   pricetoWei,
   getCollateralPrice,
+  ReBalanceCollateral,
   validatePeg,
-  depositCollateral,
   withdrawCollateral,
 };
