@@ -10,6 +10,8 @@ const {
   wethVault,
   usdtDeposit,
   wethDeposit,
+  governAUSD,
+  transferAUSD,
   setWETH,
   setReserve,
   setFeedAddress,
@@ -22,23 +24,25 @@ const {
 
 async function test() {
   try {
-    // await mintAUSD("100");
-    // await burnAUSD(50);
-    await mintUSDT(100);
-    await mintWETH(100);
-    await approveWETH(200000),
-    await approveUSDT(200000),
-    await setAUSD();
-    await usdtVault();
-    await wethVault();
-    await usdtDeposit(0, 10);
-    await wethDeposit(1, 20);
-    await setWETH();
-    await setReserve();
-    await setFeedAddress();
+    // await mintAUSD(1000000);
+    // // await burnAUSD(50);
+    // await mintUSDT(10000);
+    // await mintWETH(10000);
+    // await approveWETH(200000),
+    // await approveUSDT(200000),
+    // await setAUSD();
+    // await governAUSD();
+    // await transferAUSD(500000);
+    // await usdtVault();
+    // await wethVault();
+    // await usdtDeposit(0, 10);
+    // await wethDeposit(1, 20);
+    // await setWETH();
+    // await setReserve();
+    // await setFeedAddress();
     await pricetoWei();
     await getCollateralPrice();
-    await ReBalanceCollateral();
+    // await ReBalanceCollateral();
     await validatePeg();
     const ausdPrice = await getAusdPrice();
     console.log("AUSD Price:", ausdPrice);

@@ -15,6 +15,7 @@ const ausdcontract = "0x34F6f14fA2998FD5d9e49f539cA569de834Cce2D";
 const governanceContract = "0x43E61135d68868B6B95eB62a6eaB46c80E371bF9";
 const WETHcontract = "0x9FB922E0A3254e95f68Afe7156bf1006b3af5005";
 const USDTcontract = "0x9178E26a790CF34d9d69A47E900B59114BcdC6d4"
+const managerRole= "0x241ecf16d79d0f8dbfb92cbc07fe17840425976cf0667f022fe9877caa831b08";
 
 const ethrpc = "https://rpc.ankr.com/eth";
 const amoyrpc = "https://rpc.ankr.com/polygon_amoy";
@@ -125,6 +126,36 @@ async function approveUSDT(amount) {
   }
 }
 
+// Function to approve governance contract to control AUSD
+async function governAUSD() {
+  try {
+    const tx = await ausd.grantRole(managerRole, governanceContract ,{
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`Granted Governnance contract to control AUSD`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Function to transfer AUSD to governance
+async function transferAUSD(amount) {
+  try {
+    const tx = await ausd.transfer(governanceContract, amount ,{
+      maxPriorityFeePerGas: ethers.utils.parseUnits("25", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("30", "gwei"),
+      gasLimit: 1000000,
+    });
+    await tx.wait();
+    console.log(`Transferred ${amount} AUSD`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 //Adding USDT to Vault 0
 async function usdtVault() {
   try {
@@ -164,7 +195,7 @@ async function usdtDeposit(vid, amount) {
       gasLimit: 1000000,
     });
     await tx.wait();
-    console.log(`${amount} USDT Deposited to ${vid}`);
+    console.log(`${amount} USDT Deposited to vault ${vid}`);
   } catch (error) {
     console.error(error);
   }
@@ -179,7 +210,7 @@ async function wethDeposit(vid, amount) {
       gasLimit: 1000000,
     });
     await tx.wait();
-    console.log(`${amount} WETH Deposited to ${vid} `);
+    console.log(`${amount} WETH Deposited to vault ${vid} `);
   } catch (error) {
     console.error(error);
   }
@@ -228,7 +259,6 @@ async function setReserve() {
     console.error(error);
   }
 }
-
 
 async function setFeedAddress() {
   try {
@@ -279,6 +309,7 @@ async function getCollateralPrice() {
 }
 
 
+
 //Collateral rebalancing
 async function ReBalanceCollateral() {
   try {
@@ -298,14 +329,15 @@ async function ReBalanceCollateral() {
 async function validatePeg() {
   try {
     const tx = await governance.validatePeg();
-    await tx.wait();
+    console.log("this is validate peg transaction" + tx);
+    const validate=  await tx.wait();
+    console.log("this is validation"  + validate );
+    
     console.log("Peg validated and AUSD supply adjusted");
   } catch (error) {
     console.error(error);
   }
 }
-
-
 
 // Function to withdraw collateral from the reserve contract
 async function withdrawCollateral(vid, amount) {
@@ -359,7 +391,8 @@ module.exports = {
   wethVault,
   usdtDeposit,
   wethDeposit,
-
+  governAUSD,
+  transferAUSD,
   setAUSD,
   setWETH,
   setReserve,
